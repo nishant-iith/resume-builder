@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resume Builder</title>
+    <link rel="stylesheet" href="styles/style.css" />
+    <!-- Include html2canvas and jsPDF libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">Resume Builder</div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Templates</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Builder Section -->
+        <div class="builder">
+            <h2>Build Your Resume</h2>
+            <form id="resumeForm">
+                <!-- Personal Information Section -->
+                <div class="form-section active">
+                    <div class="form-section-header">
+                        <h3>Personal Information</h3>
+                    </div>
+                    <div class="form-section-content">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" placeholder="Your name" />
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="Your email" />
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="tel" id="phone" placeholder="+91 9876543210" pattern="(\+91\s?)?[6-9]\d{9}" title="Please enter valid Indian mobile number" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional Summary Section -->
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <h3>Professional Summary</h3>
+                    </div>
+                    <div class="form-section-content">
+                        <div class="form-group">
+                            <div class="text-editor-toolbar">
+                                <button type="button" data-command="bold" title="Bold"><i class="fas fa-bold"></i></button>
+                                <button type="button" data-command="italic" title="Italic"><i class="fas fa-italic"></i></button>
+                                <button type="button" data-command="underline" title="Underline"><i class="fas fa-underline"></i></button>
+                                <div class="separator"></div>
+                                <button type="button" data-command="insertUnorderedList" title="Bullet List"><i class="fas fa-list-ul"></i></button>
+                                <button type="button" data-command="insertOrderedList" title="Numbered List"><i class="fas fa-list-ol"></i></button>
+                            </div>
+                            <div id="summary" class="text-editor" contenteditable="true" placeholder="A brief overview of your professional background and career objectives"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Education Section -->
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <h3>Education</h3>
+                    </div>
+                    <div class="form-section-content">
+                        <div class="education-table-inputs">
+                            <div class="education-row">
+                                <input type="text" class="degree" placeholder="Degree/Certificate">
+                                <input type="text" class="institute" placeholder="Institute/Board">
+                                <input type="text" class="grade" placeholder="CGPA/%">
+                                <input type="text" class="year" placeholder="Year">
+                            </div>
+                            <div class="education-row">
+                                <input type="text" class="degree" placeholder="Senior Secondary">
+                                <input type="text" class="institute" placeholder="School/Board">
+                                <input type="text" class="grade" placeholder="Percentage">
+                                <input type="text" class="year" placeholder="Year">
+                            </div>
+                            <div class="education-row">
+                                <input type="text" class="degree" placeholder="Secondary">
+                                <input type="text" class="institute" placeholder="School/Board">
+                                <input type="text" class="grade" placeholder="Percentage">
+                                <input type="text" class="year" placeholder="Year">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience Section -->
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <h3>Experience</h3>
+                    </div>
+                    <div class="form-section-content">
+                        <div class="form-group">
+                            <div class="text-editor-toolbar">
+                                <button type="button" data-command="bold" title="Bold"><i class="fas fa-bold"></i></button>
+                                <button type="button" data-command="italic" title="Italic"><i class="fas fa-italic"></i></button>
+                                <button type="button" data-command="underline" title="Underline"><i class="fas fa-underline"></i></button>
+                                <div class="separator"></div>
+                                <button type="button" data-command="insertUnorderedList" title="Bullet List"><i class="fas fa-list-ul"></i></button>
+                                <button type="button" data-command="insertOrderedList" title="Numbered List"><i class="fas fa-list-ol"></i></button>
+                            </div>
+                            <div id="experience" class="text-editor" contenteditable="true" placeholder="Details of your work experience, responsibilities, and achievements"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills Section -->
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <h3>Skillsets</h3>
+                    </div>
+                    <div class="form-section-content">
+                        <div class="form-group">
+                            <input type="text" id="skills" placeholder="e.g. JavaScript, HTML, CSS" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects Section -->
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <h3>Projects</h3>
+                    </div>
+                    <div class="form-section-content">
+                        <div class="form-group">
+                            <textarea id="projects" placeholder="List your significant projects with brief descriptions"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certifications Section -->
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <h3>Certifications</h3>
+                    </div>
+                    <div class="form-section-content">
+                        <div class="form-group">
+                            <div class="text-editor-toolbar">
+                                <button type="button" data-command="bold" title="Bold"><i class="fas fa-bold"></i></button>
+                                <button type="button" data-command="italic" title="Italic"><i class="fas fa-italic"></i></button>
+                                <button type="button" data-command="underline" title="Underline"><i class="fas fa-underline"></i></button>
+                                <div class="separator"></div>
+                                <button type="button" data-command="insertUnorderedList" title="Bullet List"><i class="fas fa-list-ul"></i></button>
+                                <button type="button" data-command="insertOrderedList" title="Numbered List"><i class="fas fa-list-ol"></i></button>
+                            </div>
+                            <div id="certifications" class="text-editor" contenteditable="true" placeholder="List your relevant certifications and achievements"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Information Section -->
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <h3>Additional Information</h3>
+                    </div>
+                    <div class="form-section-content">
+                        <div class="form-group">
+                            <div class="text-editor-toolbar">
+                                <button type="button" data-command="bold" title="Bold"><i class="fas fa-bold"></i></button>
+                                <button type="button" data-command="italic" title="Italic"><i class="fas fa-italic"></i></button>
+                                <button type="button" data-command="underline" title="Underline"><i class="fas fa-underline"></i></button>
+                                <div class="separator"></div>
+                                <button type="button" data-command="insertUnorderedList" title="Bullet List"><i class="fas fa-list-ul"></i></button>
+                                <button type="button" data-command="insertOrderedList" title="Numbered List"><i class="fas fa-list-ol"></i></button>
+                            </div>
+                            <div id="additional" class="text-editor" contenteditable="true" placeholder="Any other relevant information you'd like to include"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" id="generateBtn">Generate Resume</button>
+                    <button type="button" id="downloadBtn">Download PDF</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview">
+            <h2>Resume Preview</h2>
+            <div id="resumePreview">
+                <h1 id="previewName">Your Name</h1>
+                <p id="previewContact">
+                    Email: <span id="previewEmail">example@example.com</span> |
+                    Phone: <span id="previewPhone">123-456-7890</span>
+                </p>
+                <h3>Professional Summary</h3>
+                <p id="previewSummary">A short summary about yourself</p>
+                
+                <h3>Education</h3>
+                <div id="previewEducation">
+                    <table class="education-table">
+                        <thead>
+                            <tr>
+                                <th>Degree/Certificate</th>
+                                <th>Institute/Board</th>
+                                <th>CGPA/%</th>
+                                <th>Year</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>B.Tech / BE / etc.</td>
+                                <td>Your Institute Name</td>
+                                <td>X.X</td>
+                                <td>20XX - 20XX</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Experience</h3>
+                <div id="previewExperience">Work experiences go here.</div>
+
+                <h3>Skills</h3>
+                <div id="previewSkills">Your skills</div>
+
+                <h3>Projects</h3>
+                <div id="previewProjects">Your projects will appear here.</div>
+
+                <h3>Certifications</h3>
+                <div id="previewCertifications">Your certifications and achievements</div>
+
+                <h3>Additional Information</h3>
+                <div id="previewAdditional">Additional information</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/app.js"></script>
+</body>
+
+</html>
