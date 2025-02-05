@@ -255,10 +255,23 @@ button {
 
 /* Resume Preview Styling */
 .preview #resumePreview {
+    display: block !important; /* Ensure preview is always visible */
     padding: 30px;
     border: 1px solid #eee;
     border-radius: 8px;
     background: #fff;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Preview Section Enhancement */
+.preview #resumePreview {
+    background: #fff;
+    padding: 40px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
 }
 
 #resumePreview h1 {
@@ -445,6 +458,68 @@ button {
     color: #adb5bd;
 }
 
+/* Modal Styling */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.modal h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.modal-button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modal-button.primary {
+    background: #007bff;
+    color: #fff;
+}
+
+.modal-button.secondary {
+    background: #6c757d;
+    color: #fff;
+}
+
+.modal-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .container {
@@ -459,6 +534,140 @@ button {
         width: 100%;
         height: auto;
         max-height: none;
+    }
+}
+
+/* Enhanced Mobile Responsive Design */
+@media (max-width: 1024px) {
+    .container {
+        flex-direction: column;
+        height: auto;
+        overflow: visible;
+        padding: 10px;
+    }
+    
+    .builder,
+    .preview {
+        flex: none;
+        width: 100%;
+        height: auto;
+        max-height: none;
+        position: relative;
+        top: 0;
+        padding: 15px;
+    }
+
+    .preview {
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Form Controls */
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="tel"],
+    .form-group textarea,
+    .text-editor {
+        font-size: 16px; /* Prevent zoom on iOS */
+        padding: 10px;
+    }
+
+    /* Education Table */
+    .education-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .education-table {
+        font-size: 14px;
+    }
+    
+    .education-table th,
+    .education-table td {
+        padding: 8px;
+    }
+
+    /* Text Editor Toolbar */
+    .text-editor-toolbar {
+        flex-wrap: wrap;
+        gap: 2px;
+    }
+
+    .text-editor-toolbar button {
+        padding: 6px 8px;
+    }
+
+    /* Preview Section */
+    #resumePreview {
+        padding: 15px;
+    }
+
+    #resumePreview h1 {
+        font-size: 1.8em;
+    }
+
+    #resumePreview h3 {
+        font-size: 1.2em;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 10px;
+    }
+
+    .navbar .logo {
+        font-size: 1.2em;
+    }
+
+    .builder h2,
+    .preview h2 {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+
+    .form-section {
+        padding: 15px;
+    }
+
+    .form-section-header h3 {
+        font-size: 1em;
+    }
+
+    .btn-group {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    /* Contact Info Layout */
+    #previewContact {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    #previewContact span {
+        display: block;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) {
+    .form-section-header:hover {
+        background: #f8f9fa;
+    }
+
+    .form-section-header:active {
+        background: #e9ecef;
+    }
+
+    button:active {
+        transform: translateY(1px);
     }
 }
 
@@ -483,4 +692,11 @@ button {
     .nav-links {
         display: none;
     }
+}
+
+/* Button Feedback */
+#generateBtn.active,
+#downloadBtn.active {
+    transform: translateY(2px);
+    opacity: 0.9;
 }

@@ -106,67 +106,55 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update the resume preview based on form inputs
     function updatePreview() {
+        // Basic info updates
         previewName.textContent = fullNameInput.value || "Your Name";
         previewEmail.textContent = emailInput.value || "example@example.com";
         previewPhone.textContent = phoneInput.value || "+91 XXXXXXXXXX";
+        
+        // Professional Summary
         previewSummary.innerHTML = document.getElementById('summary').innerHTML || "A short summary about yourself";
-        previewExperience.innerHTML = document.getElementById('experience').innerHTML || "Work experiences go here.";
-
-        // Format skills (split by commas and join back with a comma-space)
-        let skills = skillsInput.value;
-        if (skills.trim() !== "") {
-            previewSkills.textContent = skills.split(",").map(skill => skill.trim()).join(", ");
-        } else {
-            previewSkills.textContent = "Your skills";
-        }
-
-        // Update education table
+        
+        // Education Table
         const educationRows = document.querySelectorAll('.education-row');
         const educationTableBody = document.querySelector('#previewEducation table tbody');
         educationTableBody.innerHTML = ''; // Clear existing rows
 
         educationRows.forEach(row => {
-            const degree = row.querySelector('.degree').value || 'Degree';
-            const institute = row.querySelector('.institute').value || 'Institute';
-            const grade = row.querySelector('.grade').value || 'CGPA/%';
-            const year = row.querySelector('.year').value || 'Year';
+            const degree = row.querySelector('.degree').value;
+            const institute = row.querySelector('.institute').value;
+            const grade = row.querySelector('.grade').value;
+            const year = row.querySelector('.year').value;
 
+            // Only create row if at least one field is filled
             if (degree || institute || grade || year) {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${degree}</td>
-                    <td>${institute}</td>
-                    <td>${grade}</td>
-                    <td>${year}</td>
+                    <td>${degree || 'Degree'}</td>
+                    <td>${institute || 'Institute'}</td>
+                    <td>${grade || 'CGPA/%'}</td>
+                    <td>${year || 'Year'}</td>
                 `;
                 educationTableBody.appendChild(tr);
             }
         });
 
-        // Update formatted sections
-        previewSummary.innerHTML = document.getElementById('summary').innerHTML || "A short summary about yourself";
-        previewExperience.innerHTML = document.getElementById('experience').innerHTML || "Work experiences go here.";
-        
-        // Add preview updates for certifications and additional info
-        if (document.getElementById('previewCertifications')) {
-            document.getElementById('previewCertifications').innerHTML = 
-                document.getElementById('certifications').innerHTML || "Your certifications and achievements";
-        }
-        
-        if (document.getElementById('previewAdditional')) {
-            document.getElementById('previewAdditional').innerHTML = 
-                document.getElementById('additional').innerHTML || "Additional information";
-        }
+        // Experience
+        document.getElementById('previewExperience').innerHTML = 
+            document.getElementById('experience').innerHTML || "Work experiences go here.";
 
-        // Update Projects
+        // Skills
+        document.getElementById('previewSkills').innerHTML = 
+            document.getElementById('skills').innerHTML || "Your skills";
+
+        // Projects
         document.getElementById('previewProjects').innerHTML = 
-            document.getElementById('projects').value || "Your projects will appear here.";
+            document.getElementById('projects').innerHTML || "Your projects will appear here.";
 
-        // Update Certifications
+        // Certifications
         document.getElementById('previewCertifications').innerHTML = 
             document.getElementById('certifications').innerHTML || "Your certifications and achievements";
 
-        // Update Additional Information
+        // Additional Information
         document.getElementById('previewAdditional').innerHTML = 
             document.getElementById('additional').innerHTML || "Additional information";
     }
@@ -175,33 +163,103 @@ document.addEventListener('DOMContentLoaded', function () {
     resumeForm.addEventListener('input', updatePreview);
 
     // Generate Resume button updates the preview
-    generateBtn.addEventListener('click', function () {
+    generateBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        // Force refresh all content
         updatePreview();
+        
+        // Ensure preview is visible
+        const preview = document.querySelector('.preview');
+        preview.style.display = 'block';
+        
+        // Scroll to preview
+        preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Visual feedback
+        generateBtn.classList.add('active');
+        setTimeout(() => generateBtn.classList.remove('active'), 200);
     });
 
-    // Download PDF functionality using html2canvas and jsPDF
-    downloadBtn.addEventListener('click', function () {
-        updatePreview(); // ensure latest changes are reflected
-        html2canvas(resumePreview, { scale: 2 }).then(canvas => {
-            const imgData = canvas.toDataURL('image/png');
-            // Using the jsPDF UMD module; note the destructuring for compatibility.
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'pt',
-                format: 'a4'
-            });
-            // Calculate dimensions for A4 paper
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
+    // Download PDF functionality
+    downloadBtn.addEventListener('click', async function (e) {
+        e.preventDefault();
+        
+        const modal = document.getElementById('filenameModal');
+        const nameBtn = document.getElementById('nameChoice');
+        const emailBtn = document.getElementById('emailChoice');
+        
+        // Show modal
+        modal.style.display = 'flex';
+        
+        // Handle filename choice and PDF generation
+        async function handleChoice(useNameFormat) {
+            modal.style.display = 'none';
+            
+            try {
+                updatePreview();
+                const resumePreview = document.getElementById('resumePreview');
+                
+                // Get name and email
+                const name = fullNameInput.value.trim().replace(/\s+/g, '_') || 'Resume';
+                const email = emailInput.value.trim().split('@')[0].toUpperCase() || 'Resume';
+                
+                // Set filename based on choice
+                const filename = useNameFormat ? `${name}_CV` : `${email}_CV`;
+                
+                // Generate PDF
+                const canvas = await html2canvas(resumePreview, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff'
+                });
 
-            // Calculate image dimensions to maintain aspect ratio
-            const imgWidth = pdfWidth - 40; // leaving some margin
-            const imgHeight = canvas.height * imgWidth / canvas.width;
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'pt', 'a4');
+                
+                // Calculate dimensions
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                const canvasWidth = canvas.width;
+                const canvasHeight = canvas.height;
+                
+                // Scale to fit page width with margins
+                const margin = 40;
+                const availableWidth = pageWidth - (2 * margin);
+                const scaleFactor = availableWidth / canvasWidth;
+                const scaledHeight = canvasHeight * scaleFactor;
+                
+                // Add image to PDF
+                pdf.addImage(
+                    canvas.toDataURL('image/png'),
+                    'PNG',
+                    margin,
+                    margin,
+                    availableWidth,
+                    scaledHeight
+                );
 
-            pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, imgHeight);
-            pdf.save('resume.pdf');
-        });
+                // Save PDF with chosen filename
+                pdf.save(`${filename}.pdf`);
+                
+            } catch (error) {
+                console.error('PDF generation failed:', error);
+                alert('Failed to generate PDF. Please try again.');
+            }
+        }
+        
+        // Add click handlers for modal buttons
+        nameBtn.onclick = () => handleChoice(true);
+        emailBtn.onclick = () => handleChoice(false);
+        
+        // Close modal if clicking outside
+        modal.onclick = (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
     });
 
     // Collapsible sections functionality
@@ -223,16 +281,35 @@ document.addEventListener('DOMContentLoaded', function () {
             section.classList.toggle('active');
         });
         
-        // Mark section as completed when filled
-        const inputs = section.querySelectorAll('input, textarea');
-        inputs.forEach(input => {
-            input.addEventListener('change', () => {
-                if (Array.from(inputs).some(i => i.value.trim() !== '')) {
-                    section.classList.add('completed');
-                } else {
-                    section.classList.remove('completed');
-                }
-            });
+        // Enhanced completion check for all types of inputs
+        function checkSectionCompletion() {
+            const inputs = section.querySelectorAll('input');
+            const textareas = section.querySelectorAll('textarea');
+            const editableDivs = section.querySelectorAll('[contenteditable="true"]');
+            
+            const hasFilledInput = Array.from(inputs).some(i => i.value.trim() !== '');
+            const hasFilledTextarea = Array.from(textareas).some(t => t.value.trim() !== '');
+            const hasFilledEditable = Array.from(editableDivs).some(d => d.innerHTML.trim() !== '');
+            
+            if (hasFilledInput || hasFilledTextarea || hasFilledEditable) {
+                section.classList.add('completed');
+            } else {
+                section.classList.remove('completed');
+            }
+        }
+
+        // Add event listeners for all input types
+        section.addEventListener('input', checkSectionCompletion);
+        section.addEventListener('change', checkSectionCompletion);
+        
+        // Also check contenteditable divs
+        const editableDivs = section.querySelectorAll('[contenteditable="true"]');
+        editableDivs.forEach(div => {
+            div.addEventListener('input', checkSectionCompletion);
+            div.addEventListener('blur', checkSectionCompletion);
         });
+        
+        // Initial check
+        checkSectionCompletion();
     });
 });

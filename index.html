@@ -3,12 +3,20 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#24292e" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Resume Builder</title>
     <link rel="stylesheet" href="styles/style.css" />
     <!-- Include html2canvas and jsPDF libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Initialize jsPDF and html2canvas -->
+    <script>
+        window.jspdf = window.jspdf || {};
+        window.html2canvas = html2canvas;
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
@@ -260,6 +268,17 @@
     </div>
 
     <script src="scripts/app.js"></script>
-</body>
 
+    <!-- Add before closing body tag -->
+    <div class="modal-overlay" id="filenameModal">
+        <div class="modal">
+            <h3>Choose filename format</h3>
+            <p>How would you like to save your resume?</p>
+            <div class="modal-buttons">
+                <button class="modal-button primary" id="nameChoice">Save as Name_CV</button>
+                <button class="modal-button secondary" id="emailChoice">Save as Roll No_CV</button>
+            </div>
+        </div>
+    </div>
+</body>
 </html>
